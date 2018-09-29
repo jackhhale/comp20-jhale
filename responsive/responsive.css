@@ -1,0 +1,35 @@
+@media only screen and (min-width: 1201px) {
+    .software {
+        width:431px; height:579px;
+        background:url(software.png) 0 0px;
+    }
+}
+
+@media only screen and (min-width: 1001px) and (max-width: 1200px){
+    .software {
+        width:436px; height:591px;
+        background:url(software.png) -437px 0px;
+    }
+}
+
+@media only screen and (min-width: 801px) and (max-width: 1000px){
+    .software {
+        width:335px; height:584px;
+        background:url(software.png) -872px 0px;
+    }
+}
+
+@media screen and (min-width: 601px) and (max-width: 800px){
+    .software {
+        width:710px; height:620px;
+        background:url(software.png) 0px -590px;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .software {
+        width:480px; height:625px;
+        background:url(software.png) -724px -587px;
+    }
+
+}
