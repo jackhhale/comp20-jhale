@@ -1,0 +1,21 @@
+body {
+    background-color: #fff78e;
+}
+
+#title{
+    font-family: "Gill Sans";
+    font-size: 69px;
+    text-align: center;
+}
+
+video{
+    display: block;
+    margin: 0 auto;
+}
+
+#lyrics{
+    text-align: center;
+    font-size: 25px;
+    color: #2a4abf;
+    font-family: "Comic Sans MS";
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>We Do</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">We Do</h1>
+
+<video src="https://www.cs.tufts.edu/comp/20/wedo.mp4" id="wedo" controls></video>
+<div id="lyrics"></div>
+
+<script>
+var vid = document.getElementById("wedo");
+
+function modifyText() {
+
+    var words = document.getElementById("lyrics");
+    if (vid.currentTime < 3.88)
+    {
+        words.innerHTML = "";
+    }
+    else if (vid.currentTime < 6.14) 
+    {
+        words.innerHTML = "Who controls the British crown?";
+    }
+    else if (vid.currentTime < 8.34)
+    {
+        words.innerHTML = "Who keeps the metric system down?";
+    }
+    else if (vid.currentTime < 12.64)
+    {
+        words.innerHTML = "We do, we do!";
+    }
+    else if (vid.currentTime < 14.7)
+    {
+        words.innerHTML = "Who keeps Atlantis off the maps?";
+    }
+    else if (vid.currentTime < 16.86)
+    {
+        words.innerHTML = "Who keeps the Martians under wraps?";
+    }
+    else if (vid.currentTime < 20.96)
+    {
+        words.innerHTML = "We do, we do!";
+    }
+    else if (vid.currentTime < 25.2)
+    {
+        words.innerHTML = "Who holds back the electric car?";
+    }
+    else if (vid.currentTime < 29.4)
+    {
+        words.innerHTML = "Who makes Steve Guttenberg a star?";
+    }
+    else if (vid.currentTime < 33.7)
+    {
+        words.innerHTML = "We do, we do!";
+    }
+    else if (vid.currentTime < 35.9)
+    {
+        words.innerHTML = "Who robs cavefish of their sight?";
+    }
+    else if (vid.currentTime < 37.95)
+    {
+        words.innerHTML = "Who rigs every Oscar night?";
+    }
+    else 
+    {
+        words.innerHTML = "We do!<br/>We do!";
+    }
+}
+
+// add event listener
+var vid = document.getElementById("wedo");
+vid.addEventListener("timeupdate", modifyText, false);
+
+</script>
+</body>
+</html> 
