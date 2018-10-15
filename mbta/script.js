@@ -92,4 +92,30 @@ var linePath2 = new google.maps.Polyline({
 linePath1.setMap(map);
 linePath2.setMap(map);
 
+// taken from google, this finds users geolocation
+infoWindow = new google.maps.InfoWindow;
+
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+                var marker = new google.maps.Marker({
+                    position: pos,
+                    title:"Current location",
+                    map: map,
+                    icon: image2
+                });
+                map.setCenter(pos);
+        }, function() {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+          // Browser doesn't support Geolocation
+          handleLocationError(false, infoWindow, map.getCenter());
+        }
+
 }
