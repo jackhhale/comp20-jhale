@@ -1,4 +1,5 @@
-image = 'logo.png';
+image1 = 'logo.png';
+image2 = 'cl_icon.png';
 
 var stops = [
     ['DavisLatLng', 42.39674, -71.121815],
@@ -14,13 +15,15 @@ var stops = [
     ['BroadwayLatLng', 42.342622, -71.056967],
     ['AndrewLatLng', 42.330154, -71.057655],
     ['JFKLatLng', 42.320685, -71.052391],
-    ['BraintreeLatLng', 42.2078543, -71.0011385],
-    ['AshmontLatLng', 42.284652, -71.06448899999999],
+    ['Savin Hill', 42.31129, -71.053331],
     ['FieldsLatLng', 42.300093, -71.061667],
     ['ShawmutLatLng', 42.29312583, -71.06573796000001],
+    ['AshmontLatLng', 42.284652, -71.06448899999999],
     ['NorthQuincyLatLng', 42.275275, -71.029583],
+    ['Wollaston', 42.2665139, -71.0203369],
     ['QuincyCenterLatLng', 42.251809, -71.005409],
-    ['QuincyAdamsLatLng', 42.233391, -71.007153]
+    ['QuincyAdamsLatLng', 42.233391, -71.007153],
+    ['BraintreeLatLng', 42.2078543, -71.0011385]
 ];
 
 var map;
@@ -30,16 +33,63 @@ function initMap() {
     zoom: 11
   });
 
-// markers for all the stops
-
+// creates markers for all the stops
 for (var i = 0; i < stops.length; i++) {
     var stop = stops[i];
     var marker = new google.maps.Marker({
         position: {lat: stop[1], lng: stop[2]},
         map: map,
-        icon: image,
+        icon: image1,
         title: stop[0]
     });
 }
+
+
+// puts all the coordinates into an array (of latlng) which will be used to create the polyline
+// the for loop runs 17 iterations because that's the line only including the left side of the fork
+var lineCoordinates1 = [];
+for (var i = 0; i < 17; i++) {
+    var stop = stops[i];
+    var location = {lat: stop[1], lng: stop[2]};
+    lineCoordinates1.push(location);
+    console.log(stops.length);
+}
+
+var lineCoordinates2 = [];
+
+// this piece of code adds JFK/UMASS so the right side of the fork can be connected
+var JFKstop = stops[12];
+var JFKlocation = {lat: JFKstop[1], lng: JFKstop[2]};
+lineCoordinates2.push(JFKlocation);
+
+// the for loop starts at 17 because we only want the right side of the fork
+for (var i = 17; i < stops.length; i++) {
+    var stop = stops[i];
+    var location = {lat: stop[1], lng: stop[2]};
+    lineCoordinates2.push(location);
+}
+
+console.log(lineCoordinates2);
+
+// Variables for the polylines
+var linePath1 = new google.maps.Polyline({
+    path: lineCoordinates1,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+});
+
+var linePath2 = new google.maps.Polyline({
+    path: lineCoordinates2,
+    geodesic: true,
+    strokeColor: '#FF0000',
+    strokeOpacity: 1.0,
+    strokeWeight: 2
+});
+
+
+linePath1.setMap(map);
+linePath2.setMap(map);
 
 }
