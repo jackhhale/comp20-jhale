@@ -206,14 +206,111 @@ console.log(markers);
         
         function give_info(i){
             return function() {
+                var request;
 
-                var infowindow = new google.maps.InfoWindow({
-                content: "test"
-                });
-                console.log(i);
-                infowindow.open(map, markers[i]);
-                };
+                request = new XMLHttpRequest();
+
+                console.log("https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3]);
+
+                request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=place-davis", true);
+
+                request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3], true);
+
+                console.log("status" + request.status);
+
+                console.log("wddwd: " + request.readyState);
+
+                request.onreadystatechange = function() {
+
+                    console.log("yedwdwes");
+                    console.log("wddwd: " + request.readyState);
+
+                    if ((request.readyState == 4) && (request.status = 200))
+                    {
+                        var the_data = request.responseText;
+
+                        var times = JSON.parse(the_data);
+
+                        console.log(times);
+
+                        var infowindow = new google.maps.InfoWindow({
+                        content: "oi"
+                        });
+
+                        infowindow.open(map, markers[i]);
+                    }
+                    console.log(request.status);
+                }
+
+                request.send();
+                console.log("status" + request.status);
+            };
         }
     
     }
 }
+
+    // for (var i = 0; i < stops.length; i++) {
+
+    //             var request;
+
+    //             request = new XMLHttpRequest();
+
+    //             console.log("https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3]);
+
+    //             request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=place-davis", true);
+
+    //             request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3], true);
+
+    //             console.log("status" + request.status);
+
+    //             console.log("wddwd: " + request.readyState);
+
+    //             request.onreadystatechange = function() {
+
+    //                 console.log("yedwdwes");
+    //                 console.log("wddwd: " + request.readyState);
+
+    //                 if ((request.readyState == 4) && (request.status = 200))
+    //                 {
+    //                     the_data = request.responseText;
+    //                     times = JSON.parse(thedata);
+
+    //                     console.log(times);
+
+    //                 }
+    //                 console.log(request.status);
+    //             }
+    //             console.log("status" + request.status);
+    
+    // }
+
+// for (var i = 0; i < stops.length; i++) {
+//     var request;
+
+// // Step 1: Make an instance of the XMLHttpRequest object to make an HTTP GET request
+// request = new XMLHttpRequest();
+
+// console.log("https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id="  + stops[i][3]);
+
+// // Step 2: Initialize HTTP request
+// request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id="  + stops[i][3], true);
+
+// // Step 3: Set up handler / callback function to deal with HTTP response
+// request.onreadystatechange = function() {
+// if ((request.readyState == 4) && (request.status = 200))
+// {
+//     var the_data = request.responseText;
+//   var weather = JSON.parse(the_data);
+  
+//   console.log(weather);
+  
+//   var element = document.getElementById(weather); 
+// }
+// console.log(request.status);
+// }
+
+// // Step 4: Send ("fire off") the request
+// request.send();
+
+// }
