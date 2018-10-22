@@ -48,9 +48,6 @@ function initMap() {
         markers.push(marker);
     }
 
-
-    console.log(markers);
-
     // puts all the coordinates into an array (of latlng) which will be used to create the polyline
     // the for loop runs 17 iterations because that's the line only including the left side of the fork
     var lineCoordinates1 = [];
@@ -145,7 +142,7 @@ function initMap() {
 
     // function definitions below
 
-    http://localhost:8000/// the code below finds the nearest station and renders a poly line between them
+    // the code below finds the nearest station and renders a poly line between them
     function find_nearest_stop() {
         // closest station will be found in the function
         var closest_stop;
@@ -193,6 +190,7 @@ function initMap() {
         // this code takes off the decimal points after the hundredth place
         var distance = (min_dis/1609.344) - ((min_dis/1609.344) % .01);
 
+        // info window with distance to nearest stop 
         var infowindow = new google.maps.InfoWindow({
         content: "Nearest stop: " + nearest_stop + "<br> Distance: " + distance + " miles"
         });
@@ -200,25 +198,23 @@ function initMap() {
         infowindow.open(map, curr_pos_marker);
     }
 
+    // adds event listeners on each of the stops which will display infowindow with train times when user clicks
     for (var i = 0; i < stops.length; i++) {
 
         markers[i].addListener('click', give_info(i))
         
+        // Callback function which gets data from API and displays info window
+        // The function "give_info" returns a function specific to the ith marker
         function give_info(i){
             return function() {
                 var request;
 
+                // makes instance of XHR object
                 request = new XMLHttpRequest();
-
-                console.log("https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3]);
-
-                request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=place-davis", true);
-
+                // opens JSON file from a remote location
                 request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3], true);
-
+                // callback function for when HTTP request is returned
                 request.onreadystatechange = function() {
-
-                    console.log("ReadyState: " + request.readyState);
 
                     if ((request.readyState == 4) && (request.status = 200))
                     {
@@ -228,31 +224,24 @@ function initMap() {
 
                         console.log(times);
 
-                        // for (var j = 0; j < times.data.length; j++)
-                        // {
-                        //     console.log(times.data[j].attributes.arrival_time);
-                        //     console.log(times.data[j].attributes.departure_time);
-                        //     console.log(times.data[j].attributes.direction_id);
-                        // }
-
                         // Put data into two arrays
                         var northbound_trains = [];
                         var southbound_trains = [];
                         for (var j = 0; j < times.data.length; j++) {
                             if (times.data[j].attributes.direction_id == 0) {
-                                if (times.data[j].attributes.arrival_time == null) {
-                                    southbound_trains.push("Arrival Time Unavailable");
+                                if (times.data[j].attributes.departure_time == null) {
+                                    southbound_trains.push("departure Time Unavailable");
                                 }
                                 else {
-                                    southbound_trains.push(convert_time(times.data[j].attributes.arrival_time));
+                                    southbound_trains.push(convert_time(times.data[j].attributes.departure_time));
                                 }
                             }
                             else if (times.data[j].attributes.direction_id == 1) {
-                                if (times.data[j].attributes.arrival_time == null) {
-                                    northbound_trains.push("Arrival Time Unavailable");
+                                if (times.data[j].attributes.departure_time == null) {
+                                    northbound_trains.push("departure Time Unavailable");
                                 }
                                 else {
-                                    northbound_trains.push(convert_time(times.data[j].attributes.arrival_time));
+                                    northbound_trains.push(convert_time(times.data[j].attributes.departure_time));
                                 }
                             }
                         }
@@ -261,8 +250,10 @@ function initMap() {
                         northbound_trains = sort_times(northbound_trains);
                         southbound_trains = sort_times(southbound_trains);
 
+                        console.log(stop[i]);
+
                         // What will be printed in infowindow
-                        var info = "<h3>Upcoming Trains:</h3> <br> <strong>Southbound Trains:</strong> ";
+                        var info = "<strong>Upcoming Trains for " + stops[i][0] + ":</strong><br>(all times are departure times) <br> <br> <strong>Southbound Trains:</strong> ";
                         for (var j = 0; j < southbound_trains.length; j++) {
                             info = info + ("<br>" + southbound_trains[j]);
                         }
@@ -270,7 +261,7 @@ function initMap() {
                         if (southbound_trains.length == 0) {
                             info = info + "<br> There are no trains at the moment";
                         }
-
+                        // What will be printed in infowindow
                         info = info + "<br> <strong>Northbound Trains: </strong>"
                         for (var j = 0; j < northbound_trains.length; j++) {
                             info = info + ("<br>" + northbound_trains[j]);
@@ -279,20 +270,16 @@ function initMap() {
                         if (northbound_trains.length == 0) {
                             info = info + "<br> There are no trains at the moment";
                         }
-
-                        console.log("INFO: " + info);
-
+                        // displays infowindow
                         var infowindow = new google.maps.InfoWindow({
                         content: info
                         });
 
                         infowindow.open(map, markers[i]);
                     }
-                    console.log(request.status);
                 }
-
+                // Execute the request
                 request.send();
-                console.log("status: " + request.status);
             };
         }
     }
@@ -319,6 +306,7 @@ function convert_time(time){
         // The hours of the time from military to regular time
         var hours = new_time.substring(0,2) % 12;
 
+        // makes sure it doesn't say 00:xx
         if (hours == 0){
             hours = 12;
         }
@@ -326,7 +314,14 @@ function convert_time(time){
         new_time = hours + new_time.substr(2) + " PM";
     }
     else {
-        new_time = new_time + " AM"
+        var hours = new_time.substring(0,2);
+
+        // makes sure it doesn't say 00:xx
+        if (hours == 0){
+            hours = 12;
+
+        new_time = hours + new_time.substr(2) + " AM";
+        }
     }
 
     return new_time;
