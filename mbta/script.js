@@ -49,7 +49,7 @@ function initMap() {
     }
 
 
-console.log(markers);
+    console.log(markers);
 
     // puts all the coordinates into an array (of latlng) which will be used to create the polyline
     // the for loop runs 17 iterations because that's the line only including the left side of the fork
@@ -128,7 +128,7 @@ console.log(markers);
                     var distance = (min_dis/1609.344) - ((min_dis/1609.344) % .01);
 
                     var infowindow = new google.maps.InfoWindow({
-                    content: "Nearest stop: " + nearest_stop + "<br/> Distance: " + distance + " miles"
+                    content: "Nearest stop: " + nearest_stop + "<br> Distance: " + distance + " miles"
                     });
 
                     infowindow.open(map, curr_pos_marker);
@@ -194,7 +194,7 @@ console.log(markers);
         var distance = (min_dis/1609.344) - ((min_dis/1609.344) % .01);
 
         var infowindow = new google.maps.InfoWindow({
-        content: "Nearest stop: " + nearest_stop + "<br/> Distance: " + distance + " miles"
+        content: "Nearest stop: " + nearest_stop + "<br> Distance: " + distance + " miles"
         });
 
         infowindow.open(map, curr_pos_marker);
@@ -216,14 +216,9 @@ console.log(markers);
 
                 request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3], true);
 
-                console.log("status" + request.status);
-
-                console.log("wddwd: " + request.readyState);
-
                 request.onreadystatechange = function() {
 
-                    console.log("yedwdwes");
-                    console.log("wddwd: " + request.readyState);
+                    console.log("ReadyState: " + request.readyState);
 
                     if ((request.readyState == 4) && (request.status = 200))
                     {
@@ -233,8 +228,62 @@ console.log(markers);
 
                         console.log(times);
 
+                        // for (var j = 0; j < times.data.length; j++)
+                        // {
+                        //     console.log(times.data[j].attributes.arrival_time);
+                        //     console.log(times.data[j].attributes.departure_time);
+                        //     console.log(times.data[j].attributes.direction_id);
+                        // }
+
+                        // Put data into two arrays
+                        var northbound_trains = [];
+                        var southbound_trains = [];
+                        for (var j = 0; j < times.data.length; j++) {
+                            if (times.data[j].attributes.direction_id == 0) {
+                                if (times.data[j].attributes.arrival_time == null) {
+                                    southbound_trains.push("Arrival Time Unavailable");
+                                }
+                                else {
+                                    southbound_trains.push(convert_time(times.data[j].attributes.arrival_time));
+                                }
+                            }
+                            else if (times.data[j].attributes.direction_id == 1) {
+                                if (times.data[j].attributes.arrival_time == null) {
+                                    northbound_trains.push("Arrival Time Unavailable");
+                                }
+                                else {
+                                    northbound_trains.push(convert_time(times.data[j].attributes.arrival_time));
+                                }
+                            }
+                        }
+
+                        // Sorting the times
+                        northbound_trains = sort_times(northbound_trains);
+                        southbound_trains = sort_times(southbound_trains);
+
+                        // What will be printed in infowindow
+                        var info = "<h3>Upcoming Trains:</h3> <br> <strong>Southbound Trains:</strong> ";
+                        for (var j = 0; j < southbound_trains.length; j++) {
+                            info = info + ("<br>" + southbound_trains[j]);
+                        }
+                        // user feedback if there are no trains
+                        if (southbound_trains.length == 0) {
+                            info = info + "<br> There are no trains at the moment";
+                        }
+
+                        info = info + "<br> <strong>Northbound Trains: </strong>"
+                        for (var j = 0; j < northbound_trains.length; j++) {
+                            info = info + ("<br>" + northbound_trains[j]);
+                        }
+                        // user feedback if there are no trains
+                        if (northbound_trains.length == 0) {
+                            info = info + "<br> There are no trains at the moment";
+                        }
+
+                        console.log("INFO: " + info);
+
                         var infowindow = new google.maps.InfoWindow({
-                        content: "oi"
+                        content: info
                         });
 
                         infowindow.open(map, markers[i]);
@@ -243,74 +292,84 @@ console.log(markers);
                 }
 
                 request.send();
-                console.log("status" + request.status);
+                console.log("status: " + request.status);
             };
         }
-    
     }
 }
 
-    // for (var i = 0; i < stops.length; i++) {
+function convert_time(time){
+    var new_time = time;
+    // Deletes all the parts before the time
+    for (var i = 0; i < time.length; i++) {
+        if (time[i] == 'T')
+            break;
+        else 
+            new_time = new_time.substr(1);
+    }
+    // Deletes the "T"
+    new_time = new_time.substr(1);
+    // Deletes the "-4:00"
+    new_time = new_time.slice(0, -6);
 
-    //             var request;
+    new_time = round_time(new_time);
 
-    //             request = new XMLHttpRequest();
+    // converts military time into regular 12-hour time
+    if (new_time.substring(0,2) >= 12) {
+        // The hours of the time from military to regular time
+        var hours = new_time.substring(0,2) % 12;
 
-    //             console.log("https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3]);
+        if (hours == 0){
+            hours = 12;
+        }
 
-    //             request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=place-davis", true);
+        new_time = hours + new_time.substr(2) + " PM";
+    }
+    else {
+        new_time = new_time + " AM"
+    }
 
-    //             request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3], true);
+    return new_time;
+}
 
-    //             console.log("status" + request.status);
+function round_time(time)
+{
+    // This was supposed to take off seconds and rounds to nearest minute, but I didn't finish it
+    var seconds = time.substr(time.length - 2);
+    var minutes = time.substring(3,5);
+    var hours = time.substring(0,2);
+    if (seconds >= 30) {
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+        }
+        // to prevent minutes from being single digit (xx:x) instead of xx:0x
+        if (minutes / 10 < 1) {
+            minutes = "0" + minutes;
+        }
+        time = hours + ":" + minutes;
+    }
+    else {
+        // takes off seconds
+        time = time.slice(0, -3);
+    }
 
-    //             console.log("wddwd: " + request.readyState);
+    return time;
+}
 
-    //             request.onreadystatechange = function() {
+function sort_times(times)
+{
+    for (var i = times.size - 1; i >= 0; i--)
+        for (var j = 0; j < i; j++)
+        {
+            if (times[j] > times[i])
+            {
+                var temp = times[i];
+                times[i] = times[j];
+                times[j] = temp;
+            }
+        }
 
-    //                 console.log("yedwdwes");
-    //                 console.log("wddwd: " + request.readyState);
-
-    //                 if ((request.readyState == 4) && (request.status = 200))
-    //                 {
-    //                     the_data = request.responseText;
-    //                     times = JSON.parse(thedata);
-
-    //                     console.log(times);
-
-    //                 }
-    //                 console.log(request.status);
-    //             }
-    //             console.log("status" + request.status);
-    
-    // }
-
-// for (var i = 0; i < stops.length; i++) {
-//     var request;
-
-// // Step 1: Make an instance of the XMLHttpRequest object to make an HTTP GET request
-// request = new XMLHttpRequest();
-
-// console.log("https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id="  + stops[i][3]);
-
-// // Step 2: Initialize HTTP request
-// request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id="  + stops[i][3], true);
-
-// // Step 3: Set up handler / callback function to deal with HTTP response
-// request.onreadystatechange = function() {
-// if ((request.readyState == 4) && (request.status = 200))
-// {
-//     var the_data = request.responseText;
-//   var weather = JSON.parse(the_data);
-  
-//   console.log(weather);
-  
-//   var element = document.getElementById(weather); 
-// }
-// console.log(request.status);
-// }
-
-// // Step 4: Send ("fire off") the request
-// request.send();
-
-// }
+    return times;
+}
