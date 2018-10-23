@@ -222,8 +222,6 @@ function initMap() {
 
                         var times = JSON.parse(the_data);
 
-                        console.log(times);
-
                         // Put data into two arrays
                         var northbound_trains = [];
                         var southbound_trains = [];
@@ -249,8 +247,6 @@ function initMap() {
                         // Sorting the times
                         northbound_trains = sort_times(northbound_trains);
                         southbound_trains = sort_times(southbound_trains);
-
-                        console.log(stop[i]);
 
                         // What will be printed in infowindow
                         var info = "<strong>Upcoming Trains for " + stops[i][0] + ":</strong><br>(all times are departure times) <br> <br> <strong>Southbound Trains:</strong> ";
