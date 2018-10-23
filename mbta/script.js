@@ -122,7 +122,7 @@ function initMap() {
                     var nearest_stop = nearest_info[1];
 
                     // this code takes off the decimal points after the hundredth place
-                    var distance = (min_dis/1609.344) - ((min_dis/1609.344) % .01);
+                    var distance = (min_dis/1609.344).toFixed(2);
 
                     var infowindow = new google.maps.InfoWindow({
                     content: "Nearest stop: " + nearest_stop + "<br> Distance: " + distance + " miles"
