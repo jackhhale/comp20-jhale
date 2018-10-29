@@ -10,7 +10,7 @@
     <script>
         $(document).ready(function(){
             for (var i = 0; i < localStorage.length; i++) {
-                $("#log").append("<br>" + localStorage.key(i) + " - " + localStorage.getItem(localStorage.key(i))); 
+                $("#log").prepend("<br>" + localStorage.key(i) + " - " + localStorage.getItem(localStorage.key(i))); 
             }
 
             $("h3").keypress(function(){
@@ -19,7 +19,7 @@
                     var date = new Date();
                     var input = $("#msg").val();
                     localStorage.setItem(date, input);
-                    $("#log").append("<br>" + date + " - " + localStorage.getItem(date)); 
+                    $("#log").prepend("<br>" + date + " - " + localStorage.getItem(date)); 
                 }
             });
         });
