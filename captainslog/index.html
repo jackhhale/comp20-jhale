@@ -8,7 +8,21 @@
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
-        // Your work will be done here...
+        $(document).ready(function(){
+            for (var i = 0; i < localStorage.length; i++) {
+                $("#log").append("<br>" + localStorage.key(i) + " - " + localStorage.getItem(localStorage.key(i))); 
+            }
+
+            $("h3").keypress(function(){
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13'){
+                    var date = new Date();
+                    var input = $("#msg").val();
+                    localStorage.setItem(date, input);
+                    $("#log").append("<br>" + date + " - " + localStorage.getItem(date)); 
+                }
+            });
+        });
     </script>
 </head>
 
