@@ -182,6 +182,7 @@ function initMap() {
         return [min_distance, closest_stop];
 
     }
+    
     // Handles click event on current location
     function opnewindow(nearest_info) {
         var min_dis = nearest_info[0];
