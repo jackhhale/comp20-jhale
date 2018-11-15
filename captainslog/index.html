@@ -13,7 +13,7 @@
                 $("#log").prepend("<br>" + localStorage.key(i) + " - " + localStorage.getItem(localStorage.key(i))); 
             }
 
-            $("h3").keypress(function(){
+            $("h3").keypress(function(event){
                 var keycode = (event.keyCode ? event.keyCode : event.which);
                 if(keycode == '13'){
                     var date = new Date();
