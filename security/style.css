@@ -1,0 +1,35 @@
+body {
+
+}
+
+#title{
+    font-family: "Arial";
+    font-size: 50px;
+    text-align: center;
+}
+
+#half {
+    width: 40%;
+}
+
+.indent {
+    text-indent: 5%;
+}
+
+h1{
+    font-family: "Arial";
+}
+
+h2{
+    font-family: "Arial";
+    font-size: 17px;
+    color: red;
+    text-decoration: underline;
+
+}
+
+img {
+    float:right;
+    width:399px;
+    height:205px
+}

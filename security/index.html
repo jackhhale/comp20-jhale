@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Pen Testing Results</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">Security Vulnerabilities:</h1>
+
+<h1>Introduction</h1>
+    <img src="overview.png" alt="A screenshot of the homepage">
+    <p id="half"> The product which I tested was a Web Application designed to hold the top scores of the web game 2048. The application is hosted on Heroku, Node.js with Express framework. The application is connected to a MongoDB Database which stores usernames, scores, grid objects and dates. <br> <br> The Goal of this pen testing was to find three security vulnerabilties within the application.  </p>
+
+<h1>Methodology</h1>
+    <ul>
+        <li>For NoSQL Injection I used the querry string and [$ne] in the URL bar</li>
+        <li>For XSS I used curl to submit malicious script</li>
+        <li>Milk</li>
+    </ul>
+
+
+<h1>Abstract of Findings</h1>
+    <p>
+    The three vulnerabilities found in the application were <b>Cross-site scripting (XSS)</b>, <b>NoSQL injection </b>, and <b>DDS </b> . 
+
+    <br> <br> With a <b>Cross-site scripting </b> vulnerability attackers will be able to insert javascript into the application which can do things such as send alerts to the user, redirect the user, deface the application, and more. 
+
+    <br> <br> With a <b>NoSQL injection </b> vulnerability an attacker will have the ability to gain access to data they shouldn't have access too. In this specific application the attacker can easily user NoSQL injection to access the scores and usernames of every user. In more complicated application this technique can be used to steal usernames and passwords.
+
+    <br> <br> With a <b>DDS </b> vulnerability an attacker will have the ability to gain access to data they shouldn't have access too. In this specific application the attacker can easily user NoSQL injection to access the scores and usernames of every user. In more complicated application this technique can be used to steal usernames and passwords.
+    </p>
+
+<h1>Issues Found</h1>
+    <h2> Cross-site scripting (XSS)</h2>
+    <img src="hack.png" alt="A screenshot of the homepage">
+            <h3> Issue </h3>
+            <p id="half"> This comes from trusting the user's input too much. NEVER TRUST USER INPUT. </p>
+            <h3> Location </h3>
+            <p id="half"> This is found on the homepage, but can be on any site the user can access with http GET </p>
+            <h3> Severity </h3>
+            <p id="half"> I believe this is a medium-high security risk. Attackers will be able to deface your website and expose users to malicious  content. </p> 
+            <h3> Description </h3> 
+            <p id="half"> I've injected javascript into the homepage to give the user an alert to let them know they've been attacked. </p> 
+            <h3> Resolution </h3>
+            <p id="half"> To resolve this issue I suggest removing special characters from the user input. This is a way to do it found on StackOverFlow: <br>string = string.replace(/[&\/\\#,+()$~%.'":*?&lt&gt{}]/g,'_'); <br> There is also other methods for an attacked to XSS such as a VPN. A method called escaping can ensure data is secure before rending it for the user. This is another way to prevent XSS </p>
+
+    <h2> NoSQL injection</h2>
+    <img src="dataleak.png" alt="A screenshot of the homepage">
+            <h3> Issue </h3>
+            <p id="half"> This comes from the attacker inputting code to gain access to possibly restricted data</p> 
+            <h3> Location </h3>
+            <p id="half"> In this case on the /score.json I used the [$ne] in the query string to gain access to all the data </p>
+            <h3> Severity </h3>
+            <p id="half"> I believe this is a high security risk. Attackers will be able to gain access to potentially very sensitive information. </p> 
+            <h3> Description </h3> 
+            <p id="half"> The [$ne] means not equal. I am finding all the data in the database NOT equal to an arbritary username. This gave me access to the whole database. </p> 
+            <h3> Resolution </h3> 
+            <p id="half"> To prevent this you must sanitize the input before using it. Mongo-sanitize is a solution on Github which sanitizes the input. For example it can get rid of the "$" which protects against the way I attacked the application. </p>
+
+    <h2> Cheating using curl</h2>
+    <img src="cheater.png" alt="A screenshot of the homepage">
+            <h3> Issue </h3>
+            <p id="half"> Using curl the user can submit a really highscore that they did not actually achieve </p> 
+            <h3> Location </h3>
+            <p id="half"> This is found on the homepage and /scores.json</p>
+            <h3> Severity </h3>
+            <p id="half"> This is a low security risk because it doesn't really harm anyone. It's just unfair. </p> 
+            <h3> Description </h3> 
+            <p id="half"> I used curl to sumbit a really high score that I didn't actually earn. In other application a hacker can send other false information using curl. </p> 
+            <h3> Resolution </h3> 
+            <p id="half"> To resolve this issue, once the user has submitted information, it should be checked. You can use what ever method you like (maybe check the score with the grid to see if it makes sense) to check input. You can also put limits on the character's in a username or score for example. NEVER TRUST USER INPUT </p>
+
+<h1>Abstract of Findings</h1>
+    <p>
+        A common theme throughout the application is to not trust user input. You should implement more ways to check the validity of user input. This includes removing special characters, "escaping", sanitizing the input before finding documents in MongoDB, putting limits on scores and usernames, and possibly even more complicated verification. NoSQL injection is very high risk because data can be very valuable/ sensitive. XSS is  high risk as well because there's many malicious  things an attacker can do such as inserting ads, malware, messages, etc. Cheating is also something you must look out for. Many of the solution are free such as mongo-sanatize and removing special characters. There are also other security vulnerabilities you must look out for. DDoS (distributed denial of service) can prevent users from accessing your site. These risks may involve higher costs to fix. However, right now you should focus on the low cost opportunities. Good luck!
+    </p>
+
+<h1>References</h1>
+    <p>
+        https://zanon.io/posts/nosql-injection-in-mongodb <br>
+        https://www.guru99.com/how-to-hack-website.html <br>
+        https://github.com/vkarpov15/mongo-sanitize <br>
+    </p>
+
+</body>
+</html> 
