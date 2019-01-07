@@ -204,7 +204,7 @@ function initMap() {
 
         markers[i].addListener('click', give_info(i))
         
-        // Callback function which gets data from API and displays info window
+        // Callback  function which gets data from API and displays info window
         // The function "give_info" returns a function specific to the ith marker
         function give_info(i){
             return function() {
@@ -213,7 +213,7 @@ function initMap() {
                 // makes instance of XHR object
                 request = new XMLHttpRequest();
                 // opens JSON file from a remote location
-                request.open("GET", "https://chicken-of-the-sea.herokuapp.com/redline/schedule.json?stop_id=" + stops[i][3], true);
+                request.open("GET", "https://api-v3.mbta.com/predictions?filter[route]=Red&filter[stop]=" + stops[i][3] + "&page[limit]=10&page[offset]=0&sort=departure_time&api_key=" + "37f20b63f5a94d03a577cfc4e3f629ac", true);
                 // callback function for when HTTP request is returned
                 request.onreadystatechange = function() {
 
