@@ -210,89 +210,145 @@ function initMap() {
             return function() {
                 var request;
 
-                // makes instance of XHR object
-                request = new XMLHttpRequest();
-                // opens JSON file from a remote location
-                request.open("GET", "https://api-v3.mbta.com/predictions?filter[route]=Red&filter[stop]=" + stops[i][3] + "&page[limit]=10&page[offset]=0&sort=departure_time&api_key=" + "37f20b63f5a94d03a577cfc4e3f629ac", true);
-                // callback function for when HTTP request is returned
-                request.onreadystatechange = function() {
+                $.getJSON("https://api-v3.mbta.com/predictions?filter[route]=Red&filter[stop]=" + stops[i][3] + "&page[limit]=10&page[offset]=0&sort=departure_time&api_key=" + "37f20b63f5a94d03a577cfc4e3f629ac", function(times){
 
-                    if ((request.readyState == 4) && (request.status = 200))
-                    {
-                        var the_data = request.responseText;
-
-                        var times = JSON.parse(the_data);
-
-                        // Put data into two arrays
-                        var northbound_trains = [];
-                        var southbound_trains = [];
-                        for (var j = 0; j < times.data.length; j++) {
-                            if (times.data[j].attributes.direction_id == 0) {
-                                if (times.data[j].attributes.departure_time == null) {
-                                    southbound_trains.push("departure Time Unavailable");
-                                }
-                                else {
-                                    southbound_trains.push(convert_time(times.data[j].attributes.departure_time));
-                                }
+                    // Put data into two arrays
+                    var northbound_trains = [];
+                    var southbound_trains = [];
+                    for (var j = 0; j < times.data.length; j++) {
+                        if (times.data[j].attributes.direction_id == 0) {
+                            if (times.data[j].attributes.departure_time == null) {
+                                southbound_trains.push("departure Time Unavailable");
                             }
-                            else if (times.data[j].attributes.direction_id == 1) {
-                                if (times.data[j].attributes.departure_time == null) {
-                                    northbound_trains.push("departure Time Unavailable");
-                                }
-                                else {
-                                    northbound_trains.push(convert_time(times.data[j].attributes.departure_time));
-                                }
+                            else {
+                                southbound_trains.push(convert_time(times.data[j].attributes.departure_time));
                             }
                         }
-
-                        // Sorting the times
-                        northbound_trains = sort_times(northbound_trains);
-                        southbound_trains = sort_times(southbound_trains);
-
-                        // What will be printed in infowindow
-                        var info = "<strong>Upcoming Trains for " + stops[i][0] + ":</strong><br>(all times are departure times) <br> <br> <strong>Southbound Trains:</strong> ";
-                        for (var j = 0; j < southbound_trains.length; j++) {
-                            info = info + ("<br>" + southbound_trains[j]);
+                        else if (times.data[j].attributes.direction_id == 1) {
+                            if (times.data[j].attributes.departure_time == null) {
+                                northbound_trains.push("departure Time Unavailable");
+                            }
+                            else {
+                                northbound_trains.push(convert_time(times.data[j].attributes.departure_time));
+                            }
                         }
-                        // user feedback if there are no trains
-                        if (southbound_trains.length == 0) {
-                            info = info + "<br> There are no trains at the moment";
-                        }
-                        // What will be printed in infowindow
-                        info = info + "<br> <strong>Northbound Trains: </strong>"
-                        for (var j = 0; j < northbound_trains.length; j++) {
-                            info = info + ("<br>" + northbound_trains[j]);
-                        }
-                        // user feedback if there are no trains
-                        if (northbound_trains.length == 0) {
-                            info = info + "<br> There are no trains at the moment";
-                        }
-                        // displays infowindow
-                        var infowindow = new google.maps.InfoWindow({
-                        content: info
-                        });
-
-                        infowindow.open(map, markers[i]);
                     }
-                }
-                // Execute the request
-                request.send();
+
+                    // Sorting the times
+                    northbound_trains = sort_times(northbound_trains);
+                    southbound_trains = sort_times(southbound_trains);
+
+                    // What will be printed in infowindow
+                    var info = "<strong>Upcoming Trains for " + stops[i][0] + ":</strong><br>(all times are departure times) <br> <br> <strong>Southbound Trains:</strong> ";
+                    for (var j = 0; j < southbound_trains.length; j++) {
+                        info = info + ("<br>" + southbound_trains[j]);
+                    }
+                    // user feedback if there are no trains
+                    if (southbound_trains.length == 0) {
+                        info = info + "<br> There are no trains at the moment";
+                    }
+                    // What will be printed in infowindow
+                    info = info + "<br> <strong>Northbound Trains: </strong>"
+                    for (var j = 0; j < northbound_trains.length; j++) {
+                        info = info + ("<br>" + northbound_trains[j]);
+                    }
+                    // user feedback if there are no trains
+                    if (northbound_trains.length == 0) {
+                        info = info + "<br> There are no trains at the moment";
+                    }
+                    // displays infowindow
+                    var infowindow = new google.maps.InfoWindow({
+                    content: info
+                    });
+
+                    infowindow.open(map, markers[i]);
+                });
+
+                // // makes instance of XHR object
+                // request = new XMLHttpRequest();
+                // // opens JSON file from a remote location
+                // request.open("GET", "https://api-v3.mbta.com/predictions?filter[route]=Red&filter[stop]=" + stops[i][3] + "&page[limit]=10&page[offset]=0&sort=departure_time&api_key=" + "37f20b63f5a94d03a577cfc4e3f629ac", true);
+                // // callback function for when HTTP request is returned
+                // request.onreadystatechange = function() {
+
+                //     if ((request.readyState == 4) && (request.status = 200))
+                //     {
+                //         var the_data = request.responseText;
+
+                //         var times = JSON.parse(the_data);
+
+                //         // Put data into two arrays
+                //         var northbound_trains = [];
+                //         var southbound_trains = [];
+                //         for (var j = 0; j < times.data.length; j++) {
+                //             if (times.data[j].attributes.direction_id == 0) {
+                //                 if (times.data[j].attributes.departure_time == null) {
+                //                     southbound_trains.push("departure Time Unavailable");
+                //                 }
+                //                 else {
+                //                     southbound_trains.push(convert_time(times.data[j].attributes.departure_time));
+                //                 }
+                //             }
+                //             else if (times.data[j].attributes.direction_id == 1) {
+                //                 if (times.data[j].attributes.departure_time == null) {
+                //                     northbound_trains.push("departure Time Unavailable");
+                //                 }
+                //                 else {
+                //                     northbound_trains.push(convert_time(times.data[j].attributes.departure_time));
+                //                 }
+                //             }
+                //         }
+
+                //         // Sorting the times
+                //         northbound_trains = sort_times(northbound_trains);
+                //         southbound_trains = sort_times(southbound_trains);
+
+                //         // What will be printed in infowindow
+                //         var info = "<strong>Upcoming Trains for " + stops[i][0] + ":</strong><br>(all times are departure times) <br> <br> <strong>Southbound Trains:</strong> ";
+                //         for (var j = 0; j < southbound_trains.length; j++) {
+                //             info = info + ("<br>" + southbound_trains[j]);
+                //         }
+                //         // user feedback if there are no trains
+                //         if (southbound_trains.length == 0) {
+                //             info = info + "<br> There are no trains at the moment";
+                //         }
+                //         // What will be printed in infowindow
+                //         info = info + "<br> <strong>Northbound Trains: </strong>"
+                //         for (var j = 0; j < northbound_trains.length; j++) {
+                //             info = info + ("<br>" + northbound_trains[j]);
+                //         }
+                //         // user feedback if there are no trains
+                //         if (northbound_trains.length == 0) {
+                //             info = info + "<br> There are no trains at the moment";
+                //         }
+                //         // displays infowindow
+                //         var infowindow = new google.maps.InfoWindow({
+                //         content: info
+                //         });
+
+                //         infowindow.open(map, markers[i]);
+                //     }
+                // }
+                // // Execute the request
+                // request.send();
             };
         }
     }
 }
 
+// converts time to 
 function convert_time(time){
     var new_time = time;
     // Deletes all the parts before the time
     for (var i = 0; i < time.length; i++) {
-        if (time[i] == 'T')
+        if (time[i] == 'T') {
+            // Deletes T
+            new_time = new_time.substr(1);
             break;
+        }
         else 
             new_time = new_time.substr(1);
     }
-    // Deletes the "T"
-    new_time = new_time.substr(1);
     // Deletes the "-4:00"
     new_time = new_time.slice(0, -6);
 
@@ -324,12 +380,13 @@ function convert_time(time){
     return new_time;
 }
 
+// helper function to convert time that rounds to nearest minute
 function round_time(time)
 {
-    // This was supposed to take off seconds and rounds to nearest minute, but I didn't finish it
     var seconds = time.substr(time.length - 2);
     var minutes = time.substring(3,5);
     var hours = time.substring(0,2);
+    // Takes off seconds and rounds up to nearest minute if needed
     if (seconds >= 30) {
         minutes++;
         if (minutes >= 60) {
@@ -343,7 +400,7 @@ function round_time(time)
         time = hours + ":" + minutes;
     }
     else {
-        // takes off seconds
+        // takes off seconds if we don't need to round up (rounds down)
         time = time.slice(0, -3);
     }
 

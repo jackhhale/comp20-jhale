@@ -4,7 +4,7 @@ What I learned
 
 ### What is this purpose of this Git repository?
 
-This Git repository holds the various projects I completed for Ming's Web Security Course
+This Git repository holds the various projects I completed for Ming's Web Programming Course
 
 ### What was your favorite lab or assignment and why?
 
