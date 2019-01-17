@@ -20,4 +20,4 @@ The most important things I learned were a little bit of how web devlopment work
 
 ### Now that you have finished the course, what topic would you like to delve deeper into?
 
-I'd like to dive more into creating applications to help people. I enjoyed using html + css + javascript to create a website. I like the creative aspect of making a website/ application. I don't know how similar it is, but I would be interested in learning about app developemnt as well.
+I'd like to dive more into creating applications to help people. I enjoyed using html + css + javascript to create a website. I like the creative aspect of making a website/ application. I don't know how similar it is, but I would be interested in learning about mobile app developemnt as well. I also want to dive deeper into the back-end side of web devlopment. 
